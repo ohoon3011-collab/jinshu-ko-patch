@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "published_at": "2026-09-12",
+  "files": [
+    {
+      "path": "ko_autopatch.ps1",
+      "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_autopatch.ps1",
+      "sha256": "09466416a49124cbbfefeb536465e396a2e3c13baffdfe26407ae4269ba8d4e9"
+    },
+    {
+      "path": "ko_payload/kotrans.lua",
+      "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans.lua",
+      "sha256": "a5bd6814276d2cf5e35da472815feeaf661b64638fbd6e7daca2a0c9f9c7c94b"
+    },
+    {
+      "path": "ko_payload/payload_version.txt",
+      "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/payload_version.txt",
+      "sha256": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03"
+    }
+  ]
+}
