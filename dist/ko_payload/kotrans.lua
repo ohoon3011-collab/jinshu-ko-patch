@@ -184,6 +184,8 @@ do
   -- 최신 FIX에서 새로 추가된 천부·무공 문구. 뒤에서 합쳐 최신 표현이 우선한다.
   local ok7, extra7 = pcall(require, "kotrans_fix146")
   if ok7 and type(extra7) == "table" then for k, v in pairs(extra7) do dict[k] = v end end
+  local ok8, extra8 = pcall(require, "kotrans_fix147")
+  if ok8 and type(extra8) == "table" then for k, v in pairs(extra8) do dict[k] = v end end
 end
 
 if type(ReadTalk) == "function" then
