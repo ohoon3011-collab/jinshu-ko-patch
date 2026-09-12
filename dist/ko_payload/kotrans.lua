@@ -188,6 +188,9 @@ do
   if ok8 and type(extra8) == "table" then for k, v in pairs(extra8) do dict[k] = v end end
   local ok9, extra9 = pcall(require, "kotrans_changelog_128_143")
   if ok9 and type(extra9) == "table" then for k, v in pairs(extra9) do dict[k] = v end end
+  -- 경맥 화면 전용: 경혈명과 번체 설명을 통문장 단위로 처리한다.
+  local ok10, extra10 = pcall(require, "kotrans_meridians")
+  if ok10 and type(extra10) == "table" then for k, v in pairs(extra10) do dict[k] = v end end
 end
 
 if type(ReadTalk) == "function" then
@@ -215,7 +218,7 @@ table.sort(order, function(a, b)
 end)
 
 local memo = {}
-local ensure_runtime_hooks, ensure_tjm_hook
+local ensure_runtime_hooks, ensure_tjm_hook, ensure_draw3_hook
 local localize_format = require("kotrans_formats").build(dict, lines)
 
 -- plain (non-pattern) substring replace so keys/values with % + . etc. are safe
@@ -495,6 +498,8 @@ local traditionalToSimplified = {
   ["關"]="关", ["轉"]="转", ["換"]="换", ["絕"]="绝", ["學"]="学",
   ["經"]="经", ["脈"]="脉", ["輕"]="轻", ["傳"]="传", ["門"]="门",
   ["紊"]="紊", ["態"]="态", ["種"]="种", ["隨"]="随",
+  ["統"]="统", ["計"]="计", ["員"]="员", ["衝"]="冲",
+  ["裏"]="里", ["裡"]="里",
   ["獲"]="获", ["復"]="复", ["歸"]="归", ["隱"]="隐",
   ["觸"]="触", ["強"]="强", ["護"]="护", ["擋"]="挡", ["離"]="离",
 }
@@ -621,6 +626,7 @@ ensure_runtime_hooks = function()
     end
   end
   if ensure_tjm_hook then ensure_tjm_hook() end
+  if ensure_draw3_hook then ensure_draw3_hook() end
 end
 
 -- ===== 대화 박스 자동 줄바꿈(reflow) =====
@@ -790,6 +796,19 @@ ensure_tjm_hook = function()
   end
 end
 ensure_tjm_hook()
+
+-- 경맥도 경혈명은 draw3가 통문장을 한 글자씩 자른 뒤 DrawString에 넘긴다.
+-- 자르기 전에 번역해야 '極泉' 같은 이름 전체가 '극천'으로 바뀐다.
+local draw3Hooked = false
+ensure_draw3_hook = function()
+  if draw3Hooked or type(draw3) ~= "function" then return end
+  local originalDraw3 = draw3
+  draw3Hooked = true
+  draw3 = function(str, ...)
+    return originalDraw3(KOTR(str), ...)
+  end
+end
+ensure_draw3_hook()
 -- DrawStringVertical/Grad/Outline live in custom.lua, which is required AFTER
 -- this module in jymain's init — so at this point they may not exist yet. Force
 -- custom to load now (require is cached, so jymain's later require is a no-op)
