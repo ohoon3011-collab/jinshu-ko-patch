@@ -1,11 +1,16 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "published_at": "2026-09-12",
   "files": [
     {
       "path": "ko_payload/kotrans.lua",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans.lua",
-      "sha256": "85c1fb95177f7ac366ae85613472ea40a3f776b5afe576b6efcedfe403099374"
+      "sha256": "78c28f3b52bffc6ea5e2521dd4bee73f6e9bd15290b9192520b21a3d7265dd31"
+    },
+    {
+      "path": "ko_payload/kotrans_meridians.lua",
+      "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans_meridians.lua",
+      "sha256": "4710bb0a746161d807709bb728bc195d22500b459d641d98c0a3f4647ab058ff"
     },
     {
       "path": "ko_payload/kotrans_fix147.lua",
@@ -20,7 +25,7 @@
     {
       "path": "ko_payload/payload_version.txt",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/payload_version.txt",
-      "sha256": "f5e5c9534532840fcd45bb002e69ed85c61dba2753450e26b448b7df1481e24d"
+      "sha256": "d1b77b88f4b9f675a900e4143ac768a21218623cfe1703ca43162388c3271bd6"
     }
   ]
 }
