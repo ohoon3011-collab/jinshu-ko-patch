@@ -1,11 +1,11 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "published_at": "2026-09-12",
   "files": [
     {
       "path": "ko_payload/kotrans.lua",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans.lua",
-      "sha256": "5d6853262a73382c4ddb15fd4287ce28752761318ff6d7db88f19520a46578f0"
+      "sha256": "85c1fb95177f7ac366ae85613472ea40a3f776b5afe576b6efcedfe403099374"
     },
     {
       "path": "ko_payload/kotrans_fix147.lua",
@@ -13,9 +13,14 @@
       "sha256": "f540062732010f02d41f040b72502d0800ef38110176ecb93f48b404f9bf54da"
     },
     {
+      "path": "ko_payload/kotrans_changelog_128_143.lua",
+      "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans_changelog_128_143.lua",
+      "sha256": "32379c72d8e0f83b2247667d57f0226589a1cc57142c43ec5623655292acb6b2"
+    },
+    {
       "path": "ko_payload/payload_version.txt",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/payload_version.txt",
-      "sha256": "9fd28642d3aca191e5c7fc2383cfd6fabb2aac8743f029dabb8989ac584e31bc"
+      "sha256": "f5e5c9534532840fcd45bb002e69ed85c61dba2753450e26b448b7df1481e24d"
     }
   ]
 }
