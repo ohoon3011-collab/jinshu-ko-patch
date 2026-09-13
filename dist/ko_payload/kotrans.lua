@@ -194,6 +194,8 @@ do
   -- FIX148-150 reviewed release notes and talent additions.
   local ok11, extra11 = pcall(require, "kotrans_fix150")
   if ok11 and type(extra11) == "table" then for k, v in pairs(extra11) do dict[k] = v end end
+  local ok12, extra12 = pcall(require, "kotrans_fix151")
+  if ok12 and type(extra12) == "table" then for k, v in pairs(extra12) do dict[k] = v end end
 end
 
 if type(ReadTalk) == "function" then
