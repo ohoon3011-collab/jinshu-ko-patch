@@ -555,7 +555,7 @@ function Patch-WarStatistics([string]$Root) {
         ,@('ICAgICAgICAgICAgbG9jYWwgaGludHMgPSB7WzJdID0gIuWwmuaXoOatpuWKn+S8pOWus+iusOW9lSIsIFszXSA9ICLlsJrml6DpnZ7mrablip/kvKTlrrPorrDlvZUiLCBbNF0gPSAi5bCa5peg5rK755aX6K6w5b2VIn0=', 'ICAgICAgICAgICAgbG9jYWwgaGludHMgPSB7WzJdID0gIuustOqztSDtlLztlbQg6riw66GdIOyXhuydjCIsIFszXSA9ICLquLDtg4Ag7ZS87ZW0IOq4sOuhnSDsl4bsnYwiLCBbNF0gPSAi7ZqM67O1IOq4sOuhnSDsl4bsnYwifQ==')
         ,@('ICAgICAgICBsb2NhbCBzY3JvbGxIaW50ID0gKCNyb3dzID4gbVIpIGFuZCAiICDihpEv4oaTIOa7muWKqCIgb3IgIiIKICAgICAgICBEcmF3U3RyaW5nKFcgLyAyLCBIICogMC45NTUsCiAgICAgICAgICAgIHN0cmluZy5mb3JtYXQoIuKGkC/ihpIg57+76aG1KCVkLyVkKSVzICBYL0VTQyDlhbPpl60gIERQUz3ovpPlh7ov5pe25bqPJXMiLCBwYWdlLCBNQVhQQUdFLCBzY3JvbGxIaW50LCBzaWRlSW5mbyks', 'ICAgICAgICBsb2NhbCBzY3JvbGxIaW50ID0gKCNyb3dzID4gbVIpIGFuZCAiICDihpEv4oaTIOydtOuPmSIgb3IgIiIKICAgICAgICBEcmF3U3RyaW5nKFcgLyAyLCBIICogMC45NTUsCiAgICAgICAgICAgIHN0cmluZy5mb3JtYXQoIuKGkC/ihpIg7Y6Y7J207KeAKCVkLyVkKSVzICBYL0VTQyDri6vquLAgIERQUz3tlLztlbQv7Iuc7IScJXMiLCBwYWdlLCBNQVhQQUdFLCBzY3JvbGxIaW50LCBzaWRlSW5mbyks')
     )
-    Patch-LuaTextAssembly $Root 'jywar.lua' $statPairs '7KCE7YqIIOyDgeyEuA=='
+    Patch-LuaTextAssembly $Root 'jywar.lua' $statPairs '7KCE7YisIOyDgeyEuA=='
 }
 
 function Patch-ItemMenuLayout([string]$Root) {
