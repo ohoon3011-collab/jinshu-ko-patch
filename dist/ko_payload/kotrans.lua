@@ -191,6 +191,9 @@ do
   -- 경맥 화면 전용: 경혈명과 번체 설명을 통문장 단위로 처리한다.
   local ok10, extra10 = pcall(require, "kotrans_meridians")
   if ok10 and type(extra10) == "table" then for k, v in pairs(extra10) do dict[k] = v end end
+  -- FIX148-150 reviewed release notes and talent additions.
+  local ok11, extra11 = pcall(require, "kotrans_fix150")
+  if ok11 and type(extra11) == "table" then for k, v in pairs(extra11) do dict[k] = v end end
 end
 
 if type(ReadTalk) == "function" then
