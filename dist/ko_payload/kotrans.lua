@@ -196,6 +196,8 @@ do
   if ok11 and type(extra11) == "table" then for k, v in pairs(extra11) do dict[k] = v end end
   local ok12, extra12 = pcall(require, "kotrans_fix151")
   if ok12 and type(extra12) == "table" then for k, v in pairs(extra12) do dict[k] = v end end
+  local ok13, extra13 = pcall(require, "kotrans_ui_polish")
+  if ok13 and type(extra13) == "table" then for k, v in pairs(extra13) do dict[k] = v end end
 end
 
 if type(ReadTalk) == "function" then
