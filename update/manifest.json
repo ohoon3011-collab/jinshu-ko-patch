@@ -1,21 +1,21 @@
 {
-  "version": "1.0.5",
+  "version": "1.0.6",
   "published_at": "2026-09-13",
   "files": [
     {
       "path": "ko_autopatch.ps1",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_autopatch.ps1",
-      "sha256": "4f1e047e7d6db6776691a1d5d24c07bb1e5dfafbef5c9c95f60bcfd7417cb452"
+      "sha256": "b9d04903f19da3ecbea75437fff3f5a31781344b4ad9faf7ae2fd0190cb7fc90"
     },
     {
       "path": "README_KO.txt",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/README_KO.txt",
-      "sha256": "5d732e4d04e93d950c4922cf56b0d8e649756f3b1c2cc8f725c7d99c6f2c9480"
+      "sha256": "d63c370ed5f93ba189aa85d792abbcad8de2fceb36077257fb66fafd0e7cfd5b"
     },
     {
       "path": "ko_payload/kotrans.lua",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans.lua",
-      "sha256": "78c28f3b52bffc6ea5e2521dd4bee73f6e9bd15290b9192520b21a3d7265dd31"
+      "sha256": "cbc133ce3760d90f37debfa5042a18a42794417f9602dce7155160676f15cf0b"
     },
     {
       "path": "ko_payload/kotrans_meridians.lua",
@@ -28,6 +28,11 @@
       "sha256": "f540062732010f02d41f040b72502d0800ef38110176ecb93f48b404f9bf54da"
     },
     {
+      "path": "ko_payload/kotrans_fix150.lua",
+      "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans_fix150.lua",
+      "sha256": "1d8ad3f310376b818ccce353687dacbb02bf378b1add557d5403ee93c187df87"
+    },
+    {
       "path": "ko_payload/kotrans_changelog_128_143.lua",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/kotrans_changelog_128_143.lua",
       "sha256": "32379c72d8e0f83b2247667d57f0226589a1cc57142c43ec5623655292acb6b2"
@@ -35,12 +40,17 @@
     {
       "path": "ko_payload/payload_version.txt",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/payload_version.txt",
-      "sha256": "8c54bfab7f1ae9bd1a7148eae41e7b0a8f4ad3726e0cac70f823a2d45db9e60c"
+      "sha256": "51c18dc8694861beb47a67894e61044864214435389f6d3a274704d9566ff96c"
     },
     {
       "path": "ko_payload/reviewed_changelog_fix.txt",
       "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/reviewed_changelog_fix.txt",
-      "sha256": "5c862790153d23a72dd410bb8b36819d51ac248cbaec4f6742efd8e75f20b175"
+      "sha256": "9a7f91a861f59c0cb27f0af9323d158fdab7740d5e3c8016a60f4b04c0fc41e0"
+    },
+    {
+      "path": "ko_payload/reviewed_game_version.txt",
+      "url": "https://raw.githubusercontent.com/ohoon3011-collab/jinshu-ko-patch/main/dist/ko_payload/reviewed_game_version.txt",
+      "sha256": "7e10df04f6f42f8c16ad5d4be25f6bf5008464d52de62f8d150db41875fbb4ea"
     }
   ]
 }
