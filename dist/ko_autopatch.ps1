@@ -517,6 +517,20 @@ function Patch-DefaultPlayerName([string]$Root) {
     Patch-LuaTextAssembly $Root 'jyconst.lua' $namePairs 'Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikgYW5kIENPTkZJRy5QbGF5TmFtZX49IuyGjO2VmOuvuCIp'
 }
 
+function Patch-WarDisplay([string]$Root) {
+    # Battle HUD text uses dedicated vertical/card renderers which can split
+    # Chinese strings before the normal display hook sees them. Translate the
+    # complete display string first. This intentionally leaves movement and
+    # attack-range calculation/rendering untouched.
+    $warPairs = @(
+        ,@('ZnVuY3Rpb24gZHJhdzIoc3RyLCB4LCB5LCBjb2xvciwgc2l6ZSwgY29sb3IyKQoKICAgIHggPSB4IC0gc2l6ZSAvIDI=', 'ZnVuY3Rpb24gZHJhdzIoc3RyLCB4LCB5LCBjb2xvciwgc2l6ZSwgY29sb3IyKQogICAgc3RyID0gS09UUihzdHIpCgogICAgeCA9IHggLSBzaXplIC8gMg==')
+        ,@('ZnVuY3Rpb24gZHJhdzMoc3RyLCB4LCB5LCBjb2xvciwgc2l6ZSwgY29sb3IyLCBoLHR0ZikKICAgIHR0ZiA9IHR0ZiBvciBDQy5Gb250TmFtZQ==', 'ZnVuY3Rpb24gZHJhdzMoc3RyLCB4LCB5LCBjb2xvciwgc2l6ZSwgY29sb3IyLCBoLHR0ZikKICAgIHN0ciA9IEtPVFIoc3RyKQogICAgdHRmID0gdHRmIG9yIENDLkZvbnROYW1l')
+        ,@('ICAgIGxvY2FsIGVmZmVjdFRleHQgPSBDQy5aVFNNW2luZGV4XVs2XSBvciAiIg==', 'ICAgIGxvY2FsIGVmZmVjdFRleHQgPSBLT1RSKENDLlpUU01baW5kZXhdWzZdIG9yICIiKQ==')
+        ,@('ICAgIGxvY2FsIHN0ID0gTU0gLi4gIuaciCIgLi4gREQgLi4gIuaXpSIgLi4gSEggLi4gIuaXtiI=', 'ICAgIGxvY2FsIHN0ID0gdG9zdHJpbmcodDMpIC4uICLsm5QiIC4uIHRvc3RyaW5nKHQyKSAuLiAi7J28IiAuLiBLT1RSKEhIKSAuLiAi7IucIg==')
+    )
+    Patch-LuaTextAssembly $Root 'jywar.lua' $warPairs 'ZnVuY3Rpb24gZHJhdzMoc3RyLCB4LCB5LCBjb2xvciwgc2l6ZSwgY29sb3IyLCBoLHR0ZikKICAgIHN0ciA9IEtPVFIoc3RyKQ=='
+}
+
 function Patch-JyMenuHardcodedFonts([string]$Root) {
     # Several shop/menu functions bypass CC.FONT0..9 and open numbered TTF
     # files directly.  Korean labels patched into those paths render as square
@@ -589,6 +603,7 @@ function Invoke-KoreanPatch([string]$Root) {
     Patch-JyConst $Root
     Patch-DefaultPlayerName $Root
     Patch-TimeAndSaveUI $Root
+    Patch-WarDisplay $Root
     Patch-JyMenuHardcodedFonts $Root
     Patch-DescriptionSources $Root
     Update-NewChineseReport $Root
