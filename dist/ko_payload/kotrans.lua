@@ -725,10 +725,17 @@ function KOTR_tjm(str, xnum)
   local whole = exact_line(str)
   local prefix, body = split_control_prefix(str)
   local bodyWhole = body and exact_line(body)
+  -- Rumor rows prepend a dynamic marker such as [连]2. before the actual
+  -- quest sentence.  Translate the complete body first so it does not fall
+  -- back to partial word replacement and leave mixed Chinese/Korean text.
+  local rumorPrefix, rumorBody = str:match("^(%b[]%d+%.%s*)(.+)$")
+  local rumorWhole = rumorBody and exact_line(rumorBody)
   if whole ~= nil then
     str = whole
   elseif bodyWhole ~= nil then
     str = prefix .. bodyWhole
+  elseif rumorWhole ~= nil then
+    str = rumorPrefix .. rumorWhole
   elseif sfind(str, "*", 1, true) then
     str = str:gsub("[^*]+", function(seg)
       local lead, core, tail = seg:match("^(%s*)(.-)(%s*)$")
