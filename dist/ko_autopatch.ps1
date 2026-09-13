@@ -508,11 +508,13 @@ function Patch-TimeAndSaveUI([string]$Root) {
 function Patch-DefaultPlayerName([string]$Root) {
     # Korean IME input is not available in the legacy name box.  Preserve a
     # user-supplied name, but make every new-game path use the canonical hero
-    # name when CONFIG.PlayName is empty or whitespace.
+    # name when CONFIG.PlayName is empty/whitespace or contains the Korean
+    # display spelling, which the legacy person-data encoding cannot store.
     $namePairs = @(
         ,@('Q0MuTmV3UGVyc29uTmFtZT1DT05GSUcuUGxheU5hbWU7', 'Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikpIGFuZCBDT05GSUcuUGxheU5hbWUgb3IgIuWwj+iZvuexsyI7')
+        ,@('Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikpIGFuZCBDT05GSUcuUGxheU5hbWUgb3IgIuWwj+iZvuexsyI7', 'Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikgYW5kIENPTkZJRy5QbGF5TmFtZX49IuyGjO2VmOuvuCIpIGFuZCBDT05GSUcuUGxheU5hbWUgb3IgIuWwj+iZvuexsyI7')
     )
-    Patch-LuaTextAssembly $Root 'jyconst.lua' $namePairs 'Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikp'
+    Patch-LuaTextAssembly $Root 'jyconst.lua' $namePairs 'Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikgYW5kIENPTkZJRy5QbGF5TmFtZX49IuyGjO2VmOuvuCIp'
 }
 
 function Patch-JyMenuHardcodedFonts([string]$Root) {
