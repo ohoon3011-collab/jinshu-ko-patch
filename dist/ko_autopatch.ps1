@@ -571,6 +571,46 @@ function Patch-JyMenuHardcodedFonts([string]$Root) {
     Write-Status ('Hardcoded jymenu fonts redirected: ' + $fontMatches.Count)
 }
 
+function Patch-JyWarHardcodedFonts([string]$Root) {
+    # The victory/reward screen opens FONT/3.TTF directly, bypassing the
+    # Korean font aliases. Redirect those battle-result draw calls without
+    # changing combat, reward, or range logic.
+    $target = Join-Path (Join-Path $Root 'script') 'jywar.lua'
+    if (-not (Test-Path -LiteralPath $target -PathType Leaf)) {
+        throw 'script\jywar.lua was not found.'
+    }
+    $utf8 = [Text.UTF8Encoding]::new($false, $true)
+    $wrapper = [IO.File]::ReadAllText($target, $utf8)
+    $source = ConvertFrom-LuaWrapper $wrapper
+    $fontPattern = 'CONFIG\.CurrentPath\s*\.\.\s*["'']FONT/[0-9]+(?:-[0-9]+)?\.[Tt][Tt][Ff]["'']'
+    $fontMatches = [regex]::Matches($source, $fontPattern)
+    if ($fontMatches.Count -eq 0) {
+        if ($source.Contains('CONFIG.CurrentPath .. "FONT/korean.ttf"')) {
+            Write-Status 'Hardcoded jywar fonts are already redirected.'
+            return
+        }
+        throw 'Hardcoded jywar font anchors were not found; jywar.lua was not changed.'
+    }
+
+    $patchedSource = [regex]::Replace($source, $fontPattern, 'CONFIG.CurrentPath .. "FONT/korean.ttf"')
+    $backupDir = Join-Path $Root '_ko_auto_backup'
+    [IO.Directory]::CreateDirectory($backupDir) | Out-Null
+    $stamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+    Copy-Item -LiteralPath $target -Destination (Join-Path $backupDir ('jywar_font_' + $stamp + '.lua')) -Force
+
+    $patchedWrapper = ConvertTo-LuaWrapper $patchedSource $wrapper
+    $temp = $target + '.ko_tmp'
+    [IO.File]::WriteAllText($temp, $patchedWrapper, [Text.UTF8Encoding]::new($false))
+    $verifySource = ConvertFrom-LuaWrapper ([IO.File]::ReadAllText($temp, $utf8))
+    if ([regex]::Matches($verifySource, $fontPattern).Count -ne 0 -or
+        -not $verifySource.Contains('CONFIG.CurrentPath .. "FONT/korean.ttf"')) {
+        Remove-Item -LiteralPath $temp -Force
+        throw 'Hardcoded jywar font verification failed; original was preserved.'
+    }
+    Move-Item -LiteralPath $temp -Destination $target -Force
+    Write-Status ('Hardcoded jywar fonts redirected: ' + $fontMatches.Count)
+}
+
 function Patch-DescriptionSources([string]$Root) {
     # Translate complete descriptions before any UI splits them into glyphs/rows.
     # Base64 keeps this launcher parseable by Windows PowerShell 5.1 on every locale.
@@ -587,6 +627,13 @@ function Patch-DescriptionSources([string]$Root) {
     Patch-LuaTextAssembly $Root 'tianfu.lua' $talentPairs 'ICAgIHJldHVybiBLT1RSKGRlc2Mp'
 
     $kungfuPairs = @(
+        # Natural Korean sentence assembly for dynamically colored values.
+        ,@('ICAgICAgICAgICAgICAgIHJldHVybiBjbCAuLiAi5pS75Ye75pe26YCg5oiQ5Lyk5a6z5pe2IiAuLiBjbDIgLi4gZ2wgLi4gY2wgLi4gIuamgueOh+ebruagh+aXoOazleinpuWPkeWGheWKn+aKpOS9k+OAgiIg', 'ICAgICAgICAgICAgICAgIHJldHVybiBjbCAuLiAi6rO16rKp7Jy866GcIO2UvO2VtOulvCDspIQg65WMICIgLi4gY2wyIC4uIGdsIC4uIGNsIC4uICIg7ZmV66Wg66GcIOuMgOyDgeydmCDrgrTqs7Ug7Zi47LK0IOuwnOuPmeydhCDrp4nsirXri4jri6QuIiA=')
+        ,@('ICAgICAgICAgICAgICAgIHJldHVybiBjbCAuLiAi5pS75Ye75pe2IiAuLiBjbDIgLi4gZ2wgLi4gY2wgLi4gIuamgueOh+WHj+Wwkeebruagh+WGheWKmyIgLi4gY2wyIC4uIGhoIC4uIGNsIC4uICLngrnjgIIiIA==', 'ICAgICAgICAgICAgICAgIHJldHVybiBjbCAuLiAi6rO16rKpIOyLnCAiIC4uIGNsMiAuLiBnbCAuLiBjbCAuLiAiIO2ZleuloOuhnCDrjIDsg4HsnZgg64K066Cl7J2EICIgLi4gY2wyIC4uIGhoIC4uIGNsIC4uICIg6rCQ7IaM7Iuc7YK164uI64ukLiIg')
+        # Requirements used to concatenate labels and values without separators.
+        ,@('CQkJc3MgPSBzcy4ubmV3cy4uc3RyMS4ubmV3czEuLm15VGhpbmdbc3RyXQ==', 'CQkJaWYgc3Mgfj0gIiIgdGhlbiBzcyA9IHNzIC4uICIgLyAiIGVuZA0KCQkJc3MgPSBzcyAuLiBzdHIxIC4uICIgIiAuLiB0b3N0cmluZyhteVRoaW5nW3N0cl0p')
+        ,@('CWVuZA0KDQoJLS3nibnmrorpnIDmsYI=', 'CWVuZA0KCW5ld3MgPSBzcyB+PSAiIiBhbmQgIiAvICIgb3IgIiINCgluZXdzMSA9ICIgIg0KDQoJLS3nibnmrorpnIDmsYI=')
+        ,@('CXd6ID0gIiIuLnN0ci4ubmV3czEuLnNzLi5zczE=', 'CXd6ID0gc3MuLnNzMQ==')
         ,@('ICAgIHJldHVybiB0YWJsZS5jb25jYXQocGFydHMpDQplbmQNCg0KZnVuY3Rpb24gS3VuZ2Z1X3pzZWZmZWN0X21hcA==', 'ICAgIHJldHVybiBLT1RSKHRhYmxlLmNvbmNhdChwYXJ0cykpDQplbmQNCg0KZnVuY3Rpb24gS3VuZ2Z1X3pzZWZmZWN0X21hcA==')
         ,@('ICAgIHJldHVybiBkZXNjLi4iKu+8oi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIg0KZW5kDQoNCi0t5q2m5Yqf5ZCN56ew', 'ICAgIHJldHVybiBLT1RSKGRlc2MuLiIq77yiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iKQ0KZW5kDQoNCi0t5q2m5Yqf5ZCN56ew')
         ,@('ICAgIGt1bmdmdS5kZXNjID0gaXRlbURhdGFbIueJqeWTgeivtOaYjiJdIG9yICLml6Ai', 'ICAgIGt1bmdmdS5kZXNjID0gS09UUihpdGVtRGF0YVsi54mp5ZOB6K+05piOIl0gb3IgIuaXoCIp')
@@ -604,6 +651,7 @@ function Invoke-KoreanPatch([string]$Root) {
     Patch-DefaultPlayerName $Root
     Patch-TimeAndSaveUI $Root
     Patch-WarDisplay $Root
+    Patch-JyWarHardcodedFonts $Root
     Patch-JyMenuHardcodedFonts $Root
     Patch-DescriptionSources $Root
     Update-NewChineseReport $Root
