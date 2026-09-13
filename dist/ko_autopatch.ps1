@@ -228,6 +228,93 @@ function Update-NewChineseReport([string]$Root) {
     [IO.File]::WriteAllText($versionPath, $version, [Text.UTF8Encoding]::new($false))
 }
 
+function Get-ReviewedChangelogFix {
+    $path = Join-Path (Join-Path $PSScriptRoot 'ko_payload') 'reviewed_changelog_fix.txt'
+    if (Test-Path -LiteralPath $path -PathType Leaf) {
+        $value = (Get-Content -LiteralPath $path -Raw).Trim()
+        if ($value -match '^\d+$') { return [int]$value }
+    }
+    return 147
+}
+
+function Update-TranslationRequest([string]$Root) {
+    # The official changelog is plain UTF-8 and lives beside the game EXE.
+    # Extract only FIX sections newer than our last human-reviewed release.
+    # This keeps the user from finding/copying update.lua and changelog by hand.
+    $changelogPath = Join-Path $Root 'changelog'
+    if (-not (Test-Path -LiteralPath $changelogPath -PathType Leaf)) { return }
+
+    $utf8 = [Text.UTF8Encoding]::new($false, $true)
+    try {
+        $text = [IO.File]::ReadAllText($changelogPath, $utf8)
+    } catch {
+        Write-Status ('Changelog scan skipped: ' + $_.Exception.Message)
+        return
+    }
+
+    $reviewedFix = Get-ReviewedChangelogFix
+    $sections = [Collections.Generic.List[object]]::new()
+    $pattern = '(?ms)^fix(?<fix>\d+)[ \t]+(?<date>[^\r\n]*)\r?\n(?<body>.*?)(?=^-{3,}[ \t]*\r?$|^fix\d+[ \t]|\z)'
+    foreach ($match in [regex]::Matches($text, $pattern)) {
+        $fix = [int]$match.Groups['fix'].Value
+        if ($fix -gt $reviewedFix) {
+            $body = $match.Groups['body'].Value.Trim()
+            $sections.Add([pscustomobject]@{
+                Fix = $fix
+                Date = $match.Groups['date'].Value.Trim()
+                Body = $body
+            })
+        }
+    }
+
+    $newChinesePath = Join-Path $Root '_ko_new_chinese_report.txt'
+    $hasNewChinese = Test-Path -LiteralPath $newChinesePath -PathType Leaf
+    if ($sections.Count -eq 0 -and -not $hasNewChinese) { return }
+
+    $lines = [Collections.Generic.List[string]]::new()
+    $lines.Add('JINSHU Korean Patch - Translation Request')
+    $lines.Add(('Last reviewed changelog: fix' + $reviewedFix))
+    $lines.Add(('Current game version: ' + (Get-UpdateVersion $Root)))
+    $lines.Add('Paste this entire text into the existing ChatGPT patch conversation.')
+    $lines.Add('')
+    if ($sections.Count -gt 0) {
+        $lines.Add('[NEW CHANGELOG SECTIONS]')
+        foreach ($section in @($sections | Sort-Object Fix -Descending)) {
+            $lines.Add(('fix' + $section.Fix + ' ' + $section.Date))
+            foreach ($line in ($section.Body -split '\r?\n')) { $lines.Add($line) }
+            $lines.Add('')
+        }
+    }
+    if ($hasNewChinese) {
+        $lines.Add('[NEW GAME TEXT CANDIDATES]')
+        foreach ($line in [IO.File]::ReadAllLines($newChinesePath, $utf8)) { $lines.Add($line) }
+    }
+
+    $requestPath = Join-Path $Root '_ko_translation_request.txt'
+    $content = [string]::Join("`r`n", $lines)
+    $stateDir = Join-Path $Root '_ko_auto_state'
+    [IO.Directory]::CreateDirectory($stateDir) | Out-Null
+    $hashPath = Join-Path $stateDir 'translation_request_sha256.txt'
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try {
+        $hash = ([BitConverter]::ToString($sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($content)))).Replace('-', '').ToLowerInvariant()
+    } finally {
+        $sha.Dispose()
+    }
+    $oldHash = if (Test-Path -LiteralPath $hashPath) { (Get-Content -LiteralPath $hashPath -Raw).Trim() } else { '' }
+    [IO.File]::WriteAllText($requestPath, $content, [Text.UTF8Encoding]::new($true))
+    if ($hash -ne $oldHash) {
+        [IO.File]::WriteAllText($hashPath, $hash, [Text.UTF8Encoding]::new($false))
+        try {
+            Set-Clipboard -Value $content
+            Write-Status 'New translation request copied to the clipboard.'
+        } catch {
+            Write-Status 'New translation request is ready in _ko_translation_request.txt.'
+        }
+        Write-Status ('Official changelog additions found after fix' + $reviewedFix + ': ' + $sections.Count + ' section(s).')
+    }
+}
+
 function Patch-JyMain([string]$Root) {
     $target = Join-Path (Join-Path $Root 'script') 'jymain.lua'
     if (-not (Test-Path -LiteralPath $target -PathType Leaf)) { throw 'script\\jymain.lua was not found.' }
@@ -480,6 +567,7 @@ function Invoke-KoreanPatch([string]$Root) {
     Patch-JyMenuHardcodedFonts $Root
     Patch-DescriptionSources $Root
     Update-NewChineseReport $Root
+    Update-TranslationRequest $Root
 }
 
 function Find-GameExe([string]$Root) {
