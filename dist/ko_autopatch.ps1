@@ -505,6 +505,16 @@ function Patch-TimeAndSaveUI([string]$Root) {
     Patch-LuaTextAssembly $Root 'jymenu.lua' $menuPairs 'X3N0YXR1c1N0ckNhY2hlLnRpbWVzdHIgPSAi7LKc7IScICI='
 }
 
+function Patch-DefaultPlayerName([string]$Root) {
+    # Korean IME input is not available in the legacy name box.  Preserve a
+    # user-supplied name, but make every new-game path use the canonical hero
+    # name when CONFIG.PlayName is empty or whitespace.
+    $namePairs = @(
+        ,@('Q0MuTmV3UGVyc29uTmFtZT1DT05GSUcuUGxheU5hbWU7', 'Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikpIGFuZCBDT05GSUcuUGxheU5hbWUgb3IgIuWwj+iZvuexsyI7')
+    )
+    Patch-LuaTextAssembly $Root 'jyconst.lua' $namePairs 'Q0MuTmV3UGVyc29uTmFtZT0oQ09ORklHLlBsYXlOYW1lIGFuZCBDT05GSUcuUGxheU5hbWU6bWF0Y2goIiVTIikp'
+}
+
 function Patch-JyMenuHardcodedFonts([string]$Root) {
     # Several shop/menu functions bypass CC.FONT0..9 and open numbered TTF
     # files directly.  Korean labels patched into those paths render as square
@@ -575,6 +585,7 @@ function Invoke-KoreanPatch([string]$Root) {
     Install-KoreanAssets $Root
     Patch-JyMain $Root
     Patch-JyConst $Root
+    Patch-DefaultPlayerName $Root
     Patch-TimeAndSaveUI $Root
     Patch-JyMenuHardcodedFonts $Root
     Patch-DescriptionSources $Root
