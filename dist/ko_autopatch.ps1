@@ -269,6 +269,18 @@ function Update-TranslationRequest([string]$Root) {
 
     $newChinesePath = Join-Path $Root '_ko_new_chinese_report.txt'
     $hasNewChinese = Test-Path -LiteralPath $newChinesePath -PathType Leaf
+    if ($hasNewChinese) {
+        $reviewedGameVersionPath = Join-Path (Join-Path $PSScriptRoot 'ko_payload') 'reviewed_game_version.txt'
+        $reviewedGameVersion = if (Test-Path -LiteralPath $reviewedGameVersionPath -PathType Leaf) {
+            (Get-Content -LiteralPath $reviewedGameVersionPath -Raw).Trim()
+        } else { '0' }
+        $reportHeader = [IO.File]::ReadAllText($newChinesePath, $utf8)
+        $reportVersionMatch = [regex]::Match($reportHeader, '(?m)^Current version:\s*(\d+)\s*$')
+        if ($reportVersionMatch.Success -and
+            [decimal]$reportVersionMatch.Groups[1].Value -le [decimal]$reviewedGameVersion) {
+            $hasNewChinese = $false
+        }
+    }
     if ($sections.Count -eq 0 -and -not $hasNewChinese) { return }
 
     $lines = [Collections.Generic.List[string]]::new()
